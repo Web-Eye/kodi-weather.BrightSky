@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+    id="weather.brightsky"
+    version="1.0.0+beta"
+    name="Bright Sky Weather Provider"
+    provider-name="WebEye">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+    <import addon="script.module.requests" version="2.31.0"/>
+  </requires>
+
+  <extension point="xbmc.python.weather" library="main.py" />
+
+  <extension point="xbmc.addon.metadata">
+    <language>en</language>
+    <platform>all</platform>
+    <license>GPL-3.0-only</license>
+    <website>https://github.com/Web-Eye/kodi-weather.brightsky</website>
+    <source>https://github.com/Web-Eye/kodi-weather.brightsky</source>
+    <summary lang="de">Wiedermal ein Wetter Addon.</summary>
+    <summary lang="en">Just another weather addon.</summary>
+    <disclaimer lang="en_GB">Use at your own risk. Post suggestions, improvements or bug reports directly to GitHub.</disclaimer>
+    <disclaimer lang="de_DE">Benutzung auf eigene Gefahr. Anregungen, Verbesserungen oder Bugs bitte direkt über GitHub posten.</disclaimer>
+    <assets>
+      <icon>resources/assets/icon.png</icon>
+      <fanart>resources/assets/fanart.png</fanart>
+      <screenshot>resources/assets/screenshot_1.png</screenshot>
+      <screenshot>resources/assets/screenshot_2.png</screenshot>
+      <screenshot>resources/assets/screenshot_3.png</screenshot>
+    </assets>
+    <news>
+    </news>
+  </extension>
+</addon>

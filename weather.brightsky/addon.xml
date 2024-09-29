@@ -22,11 +22,13 @@
     <disclaimer lang="en_GB">Use at your own risk. Post suggestions, improvements or bug reports directly to GitHub.</disclaimer>
     <disclaimer lang="de_DE">Benutzung auf eigene Gefahr. Anregungen, Verbesserungen oder Bugs bitte direkt über GitHub posten.</disclaimer>
     <assets>
-      <icon>resources/assets/icon.png</icon>
+      <icon>resources/assets/logo.png</icon>
+      <!--
       <fanart>resources/assets/fanart.png</fanart>
       <screenshot>resources/assets/screenshot_1.png</screenshot>
       <screenshot>resources/assets/screenshot_2.png</screenshot>
       <screenshot>resources/assets/screenshot_3.png</screenshot>
+      -->
     </assets>
     <news>
     </news>

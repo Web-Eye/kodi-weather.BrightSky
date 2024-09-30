@@ -1,0 +1,61 @@
+# Kodi Media Center language file
+# Addon Name: Bright Sky Weather Provider
+# Addon id: weather.brightsky
+# Addon Provider: WebEye
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: German (http://www.transifex.com/projects/p/xbmc-addons/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30100"
+msgid "LOCATION_INPUT"
+msgstr "Geben Sie Ort oder Postleitzahl ein."
+
+msgctxt "#30101"
+msgid "LOCATION_SELECT"
+msgstr "Wählen Sie Ihren Ort."
+
+msgctxt "#30500"
+msgid "LOCATION_SETTINGS"
+msgstr "Ort Einstellungen"
+
+msgctxt "#30501"
+msgid "LOCATION1"
+msgstr "Ort 1"
+
+msgctxt "#30502"
+msgid "LOCATION2"
+msgstr "Ort 2"
+
+msgctxt "#30503"
+msgid "LOCATION3"
+msgstr "Ort 3"
+
+msgctxt "#30504"
+msgid "LOCATION4"
+msgstr "Ort 4"
+
+msgctxt "#30505"
+msgid "LOCATION5"
+msgstr "Ort 5"
+
+msgctxt "#30600"
+msgid "ERROR"
+msgstr "Error"
+
+msgctxt "#30601"
+msgid "ERROR_NOMINATIM"
+msgstr "Es ist etwas mit der  Nomanatim API passiert...."
+
+msgctxt "#30602"
+msgid "ERROR_NO_LOCATION_FOUND"
+msgstr "Kein Ort gefunden"

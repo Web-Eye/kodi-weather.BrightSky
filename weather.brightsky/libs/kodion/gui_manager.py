@@ -17,6 +17,7 @@
 
 import xbmcplugin
 import xbmcgui
+import xbmc
 
 import urllib.parse
 
@@ -30,6 +31,14 @@ def getScreenWidth():
 
 def getWindow(window_id):
     return xbmcgui.Window(window_id)
+
+def getKeyboardText(default=None, heading=None, hidden=False):
+    kb = xbmc.Keyboard(default=default, heading=heading,hidden= hidden)
+    kb.doModal()
+    if kb.isConfirmed():
+        return kb.getText()
+
+    return None
 
 
 class GuiManager:
@@ -116,3 +125,7 @@ class GuiManager:
     @staticmethod
     def MsgBoxYesNo(heading, message, nolabel=None, yeslabel=None):
         return xbmcgui.Dialog().yesno(heading=heading, message=message, nolabel=nolabel, yeslabel=yeslabel)
+
+    @staticmethod
+    def MsgBoxSelect(heading, _list, autoclose: int = 0, preselect: int = -1, useDetails: bool = False):
+        return xbmcgui.Dialog().select(heading, _list, autoclose, preselect, useDetails)

@@ -13,34 +13,105 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+import json
 import sys
+import xbmc
+import requests
 
+from libs.core.nominatimAPI import nominatimAPI
 from libs.kodion.gui_manager import *
 from libs.kodion.addon import Addon
 from libs.translations import *
+from xbmc import LOGINFO, LOGDEBUG
+
 
 class brightsky:
 
     def __init__(self):
-
         # -- Constants ----------------------------------------------
         self._ADDON_ID = 'weather.brightsky'
 
         width = getScreenWidth()
-        addon = Addon(self._ADDON_ID)
+        self._addon = Addon(self._ADDON_ID)
 
         self._window = getWindow(12600)
 
-        self._NAME = addon.getAddonInfo('name')
-        self._FANART = addon.getAddonInfo('fanart')
-        self._ICON = addon.getAddonInfo('icon')
+        self._NAME = self._addon.getAddonInfo('name')
+        self._FANART = self._addon.getAddonInfo('fanart')
+        self._ICON = self._addon.getAddonInfo('icon')
         self._POSTERWIDTH = int(width / 3)
         self._DEFAULT_IMAGE_URL = ''
-        self._t = Translations(addon)
+        self._t = Translations(self._addon)
 
-        self._guiManager = GuiManager(sys.argv[1], self._ADDON_ID, self._DEFAULT_IMAGE_URL, self._FANART)
+        self._guiManager = GuiManager(0, self._ADDON_ID, self._DEFAULT_IMAGE_URL, self._FANART)
+
+    def getLocation(self, param):
+        locationId = param
+        keyword = getKeyboardText(heading=self._t.getString(LOCATION_INPUT))
+        if keyword is not None and keyword:
+
+            try:
+                api = nominatimAPI()
+                responseCode, content = api.search(quickSearch=keyword)
+
+                if responseCode == 200:
+                    if len(content) > 0:
+
+                        labels = []
+                        locations = []
+                        for location in content:
+                            labels.append(location['display_name'])
+                            locations.append({ 'lat': location['lat'],
+                                               'lon': location['lon']
+                                               })
+
+                        result = self._guiManager.MsgBoxSelect(self._t.getString(LOCATION_SELECT), labels)
+                        if result != -1:
+                            self._addon.setSetting(f'location{locationId}', labels[result])
+                            self._addon.setSetting(f'locationId{locationId}', json.dumps(locations[result]))
+
+
+                    else:
+                        self._guiManager.setToastNotification('error', self._t.getString(ERROR_NO_LOCATION_FOUND))
+                else:
+                    if 'error' in content and 'message' in content['error']:
+                        self._guiManager.setToastNotification('error', content['error']['message'])
+                    else:
+                        self._guiManager.setToastNotification('error', self._t.getString(ERROR_NOMINATIM))
+
+            except requests.exceptions.ConnectionError as e:
+                self._guiManager.setToastNotification('error', e.response.text)
+
+    def getWeather(self, param):
+        locationId = param
+        location = json.loads(self._addon.getSetting(f'locationId{locationId}'))
+        if location:
+            pass
+
+
+    @staticmethod
+    def _get_query_args(s_args):
+        args = urllib.parse.parse_qs(s_args)
+
+        for key in args:
+            args[key] = args[key][0]
+        return args
 
 
     def run(self):
-        pass
+        if sys.argv[1].isnumeric():
+            method = 'weather_request'
+            param = int(sys.argv[1])
+        else:
+            args = self._get_query_args(sys.argv[1])
+            method = args.get('action')
+            param = args.get('id')
+
+        if method is not None:
+            {
+                'location': self.getLocation,
+                'weather_request': self.getWeather
+
+            }[method](param=param)
+
+

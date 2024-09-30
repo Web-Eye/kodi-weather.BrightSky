@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+     <category id="location_settings" label="30500">
+          <setting id="location1" label="30501" type="action" action="RunScript($ID,action=location&amp;id=1)"
+                   default="" help=""/>
+          <setting id="location2" label="30502" type="action" action="RunScript($ID,action=location&amp;id=2)"
+                   enable="!eq(-1,)" default="" help=""/>
+          <setting id="location3" label="30503" type="action" action="RunScript($ID,action=location&amp;id=3)"
+                   enable="!eq(-1,)" default="" help=""/>
+          <setting id="location4" label="30504" type="action" action="RunScript($ID,action=location&amp;id=4)"
+                   enable="!eq(-1,)" default="" help=""/>
+          <setting id="location5" label="30505" type="action" action="RunScript($ID,action=location&amp;id=5)"
+                   enable="!eq(-1,)" default="" help=""/>
+          <setting id="locationId1" type="text" visible="false" default=""/>
+          <setting id="locationId2" type="text" visible="false" default=""/>
+          <setting id="locationId3" type="text" visible="false" default=""/>
+          <setting id="locationId4" type="text" visible="false" default=""/>
+          <setting id="locationId5" type="text" visible="false" default=""/>
+     </category>
+</settings>

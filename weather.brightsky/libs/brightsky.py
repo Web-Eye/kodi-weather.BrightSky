@@ -13,6 +13,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import base64
 import json
 import sys
 import xbmc
@@ -68,7 +69,7 @@ class brightsky:
                         result = self._guiManager.MsgBoxSelect(self._t.getString(LOCATION_SELECT), labels)
                         if result != -1:
                             self._addon.setSetting(f'location{locationId}', labels[result])
-                            self._addon.setSetting(f'locationId{locationId}', json.dumps(locations[result]))
+                            self._addon.setSetting(f'locationId{locationId}', self._base64Encode(json.dumps(locations[result])))
 
 
                     else:
@@ -84,9 +85,22 @@ class brightsky:
 
     def getWeather(self, param):
         locationId = param
-        location = json.loads(self._addon.getSetting(f'locationId{locationId}'))
+        location = json.loads(self._base64Decode(self._addon.getSetting(f'locationId{locationId}')))
         if location:
             pass
+
+    @staticmethod
+    def _base64Encode(s):
+        b = s.encode("ascii")
+
+        encoded = base64.b64encode(b)
+        return encoded.decode("ascii")
+
+    @staticmethod
+    def _base64Decode(s):
+        b = s.encode("ascii")
+        decoded = base64.b64decode(b)
+        return decoded.decode("ascii")
 
 
     @staticmethod

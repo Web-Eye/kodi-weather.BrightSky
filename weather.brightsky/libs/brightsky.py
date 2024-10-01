@@ -19,6 +19,7 @@ import sys
 import xbmc
 import requests
 
+from libs.core.brightskyAPI import brightskyAPI
 from libs.core.nominatimAPI import nominatimAPI
 from libs.kodion.gui_manager import *
 from libs.kodion.addon import Addon
@@ -62,6 +63,7 @@ class brightsky:
                         locations = []
                         for location in content:
                             labels.append(location['display_name'])
+                            # TODO get location shortname for current label
                             locations.append({ 'lat': location['lat'],
                                                'lon': location['lon']
                                                })
@@ -83,11 +85,66 @@ class brightsky:
             except requests.exceptions.ConnectionError as e:
                 self._guiManager.setToastNotification('error', e.response.text)
 
+    def clear_current(self):
+        pass
+
     def getWeather(self, param):
+        success = False
         locationId = param
         location = json.loads(self._base64Decode(self._addon.getSetting(f'locationId{locationId}')))
         if location:
-            pass
+
+            try:
+
+                api = brightskyAPI()
+                responseCode, content = api.currentWeather(location)
+
+                xbmc.log(json.dumps(content))
+
+                if responseCode == 200:
+
+                    # Current.Location
+                    # Current.Condition
+                    # Current.Temperature
+                    # Current.Wind
+                    # Current.WindDirection
+                    # Current.Humidity
+                    # Current.FeelsLike
+                    # Current.DewPoint
+                    # Current.ConditionIcon(eg.resource: // resource.images.weathericons.default / 28.png)
+                    # Current.FanartCode
+
+                    if 'weather' in content:
+                        success = True
+                        weather = content['weather']
+
+                        self._window.setProperty('Current.Location', self._addon.getSetting(f'location{locationId}'))
+
+                        if 'icon' in weather:
+                            self._window.setProperty('Current.Condition', str(weather['icon']))
+                        else:
+                            self._window.setProperty('Current.Condition', 'N/A')
+
+                        if 'temperature' in weather:
+                            self._window.setProperty('Current.Temperature', str(weather['temperature']))
+                        else:
+                            self._window.setProperty('Current.Temperature', 'N/A')
+
+                        # self._window.setProperty(f'Location{locationId}', self._addon.getSetting(f'location{locationId}'))
+                        # self._window.setProperty('Locations', '1')
+
+                else:
+                    if 'error' in content and 'message' in content['error']:
+                        self._guiManager.setToastNotification('error', content['error']['message'])
+                    else:
+                        self._guiManager.setToastNotification('error', self._t.getString(ERROR_BRIGHTSKY))
+
+            except requests.exceptions.ConnectionError as e:
+                self._guiManager.setToastNotification('error', e.response.text)
+
+
+        if not success:
+           self.clear_current()
 
     @staticmethod
     def _base64Encode(s):

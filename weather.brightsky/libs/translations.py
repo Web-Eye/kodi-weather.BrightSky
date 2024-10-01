@@ -20,6 +20,7 @@ LOCATION_SELECT = 'LOCATION_SELECT'
 ERROR = 'ERROR'
 ERROR_NOMINATIM = 'ERROR_NOMINATIM'
 ERROR_NO_LOCATION_FOUND = 'ERROR_NO_LOCATION_FOUND'
+ERROR_BRIGHTSKY = 'ERROR_BRIGHTSKY'
 
 class Translations:
 
@@ -33,6 +34,7 @@ class Translations:
             LOCATION_SELECT:            self._language(30101),
             ERROR:                      self._language(30600),
             ERROR_NOMINATIM:            self._language(30601),
-            ERROR_NO_LOCATION_FOUND:    self._language(30602)
+            ERROR_NO_LOCATION_FOUND:    self._language(30602),
+            ERROR_BRIGHTSKY:            self._language(30603)
 
         }[name]

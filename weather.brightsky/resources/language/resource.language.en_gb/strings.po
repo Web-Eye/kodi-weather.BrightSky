@@ -59,3 +59,7 @@ msgstr "something happened with the Nomanatim API"
 msgctxt "#30602"
 msgid "ERROR_NO_LOCATION_FOUND"
 msgstr "No location found"
+
+msgctxt "#30603"
+msgid "ERROR_BRIGHTSKY"
+msgstr "something happened with the brightsky API"

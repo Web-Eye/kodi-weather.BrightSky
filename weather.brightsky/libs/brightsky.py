@@ -13,18 +13,20 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import base64
 import json
 import sys
-import xbmc
+
 import requests
 
+from libs.conversions import getWeatherCondition, getWindDirection, getWindchill, getWeatherConditionIcon
 from libs.core.brightskyAPI import brightskyAPI
 from libs.core.nominatimAPI import nominatimAPI
 from libs.kodion.gui_manager import *
 from libs.kodion.addon import Addon
 from libs.translations import *
-from xbmc import LOGINFO, LOGDEBUG
+
 
 
 class brightsky:
@@ -60,18 +62,41 @@ class brightsky:
                     if len(content) > 0:
 
                         labels = []
+                        locations_info = []
                         locations = []
                         for location in content:
                             labels.append(location['display_name'])
-                            # TODO get location shortname for current label
-                            locations.append({ 'lat': location['lat'],
+                            locations_info.append({ 'addresstype': location['addresstype'],
+                                                    'name': location['name']
+                                                    })
+
+                            locations.append({ 'display_name': location['display_name'],
+                                               'short_name': '',
+                                               'lat': location['lat'],
                                                'lon': location['lon']
                                                })
 
                         result = self._guiManager.MsgBoxSelect(self._t.getString(LOCATION_SELECT), labels)
                         if result != -1:
+                            city = labels[result]
+                            location_info = locations_info[result]
+                            location = locations[result]
+                            if location_info['addresstype'] == 'city' and location_info['name'] != '':
+                                city = location_info['name']
+                            else:
+
+                                responsecode, content = api.reverse(lat=location['lat'], lon= location['lon'], addressdetails=1)
+                                if responseCode == 200:
+
+                                    xbmc.log(json.dumps(content))
+
+                                    if 'address' in content and 'city' in content['address'] and content['address']['city'] != '':
+                                        city = content['address']['city']
+
+                            location['short_name'] = city
+
                             self._addon.setSetting(f'location{locationId}', labels[result])
-                            self._addon.setSetting(f'locationId{locationId}', self._base64Encode(json.dumps(locations[result])))
+                            self._addon.setSetting(f'locationId{locationId}', self._base64Encode(json.dumps(location)))
 
 
                     else:
@@ -103,14 +128,9 @@ class brightsky:
 
                 if responseCode == 200:
 
-                    # Current.Location
-                    # Current.Condition
-                    # Current.Temperature
-                    # Current.Wind
-                    # Current.WindDirection
-                    # Current.Humidity
+
                     # Current.FeelsLike
-                    # Current.DewPoint
+
                     # Current.ConditionIcon(eg.resource: // resource.images.weathericons.default / 28.png)
                     # Current.FanartCode
 
@@ -118,17 +138,15 @@ class brightsky:
                         success = True
                         weather = content['weather']
 
-                        self._window.setProperty('Current.Location', self._addon.getSetting(f'location{locationId}'))
-
-                        if 'icon' in weather:
-                            self._window.setProperty('Current.Condition', str(weather['icon']))
-                        else:
-                            self._window.setProperty('Current.Condition', 'N/A')
-
-                        if 'temperature' in weather:
-                            self._window.setProperty('Current.Temperature', str(weather['temperature']))
-                        else:
-                            self._window.setProperty('Current.Temperature', 'N/A')
+                        self._window.setProperty('Current.Location', location.get('short_name', location.get('display_name')))
+                        self._window.setProperty('Current.Condition', getWeatherCondition(weather.get('icon')))
+                        self._window.setProperty('Current.Temperature', str(weather.get('temperature', 'N/A')))
+                        self._window.setProperty('Current.Wind', str(weather.get('wind_speed_30', 'N/A')))
+                        self._window.setProperty('Current.WindDirection', xbmc.getLocalizedString(getWindDirection(weather.get('wind_direction_30'))))
+                        self._window.setProperty('Current.Humidity', str(weather.get('relative_humidity', 'N/A')))
+                        self._window.setProperty('Current.DewPoint', str(weather.get('dew_point', 'N/A')))
+                        self._window.setProperty('Current.FeelsLike', str(getWindchill(weather.get('temperature'), weather.get('wind_speed_30'))))
+                        self._window.setProperty('Current.ConditionIcon', getWeatherConditionIcon(weather.get('icon')))
 
                         # self._window.setProperty(f'Location{locationId}', self._addon.getSetting(f'location{locationId}'))
                         # self._window.setProperty('Locations', '1')

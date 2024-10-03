@@ -54,5 +54,16 @@ class nominatimAPI:
             response = requests.get(url, timeout=self._request_timeout, headers=self._request_headers )
             return response.status_code, json.loads(response.content)
 
+    def details(self, fmt ='json', place_id=None):
+        if fmt and place_id is not None:
+            url = self._baseURL + f'details?format={fmt}&place_id={place_id}'
 
+            response = requests.get(url, timeout=self._request_timeout, headers=self._request_headers)
+            return response.status_code, json.loads(response.content)
 
+    def reverse(self, fmt ='json', lat=None, lon=None, addressdetails=0):
+        if fmt and lat is not None and lon is not None:
+            url = self._baseURL + f'reverse?format={fmt}&lat={lat}&lon={lon}&addressdetails={addressdetails}'
+
+            response = requests.get(url, timeout=self._request_timeout, headers=self._request_headers)
+            return response.status_code, json.loads(response.content)

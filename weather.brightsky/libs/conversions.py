@@ -18,6 +18,8 @@ import math
 
 def getWeatherCondition(condition):
 
+    # TODO: translations
+
     return {
         'clear-day': 'clear-day',
         'clear-night': 'clear-night',
@@ -26,7 +28,7 @@ def getWeatherCondition(condition):
         'cloudy': 'cloudy',
         'fog': 'fog',
         'wind': 'wind',
-        'rai': 'rai',
+        'rain': 'rain',
         'sleet': 'sleet',
         'snow': 'snow',
         'hail': 'hail',
@@ -97,3 +99,34 @@ def getWeatherConditionIcon(condition):
 
         None: 'N/A'
     }[condition]
+
+def getLongWeekDay(day):
+
+    # TODO: translations
+
+    return {
+        1: 'Monday',
+        2: 'Tuesday',
+        3: 'Wednesday',
+        4: 'Thursday',
+        5: 'Friday',
+        6: 'Saturday',
+        7: 'Sunday'
+    }[day]
+
+def getShortWeekDay(day):
+
+    # TODO: translations
+
+    return {
+        1: 'Mon',
+        2: 'Tues',
+        3: 'Wed',
+        4: 'Thur',
+        5: 'Fri',
+        6: 'Sat',
+        7: 'Sun'
+    }[day]
+
+# TODO: getShortLong Formats
+# TODO: dateTime Conversions

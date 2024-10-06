@@ -17,6 +17,9 @@
 import json
 import requests
 
+from libs.common.tools import datetimeToString
+
+
 class brightskyAPI:
 
     def __init__(self):
@@ -35,3 +38,20 @@ class brightskyAPI:
 
         response = self._request_session.get(url, timeout=self._request_timeout, headers=self._request_headers)
         return response.status_code, json.loads(response.content)
+
+    def forecast(self, location, startDate, endDate = None ):
+        lat = location['lat']
+        lon = location['lon']
+
+        s_startDate = datetimeToString(startDate, '%Y-%m-%d')
+
+
+        url = f'{self._baseURL}weather?lat={lat}&lon={lon}&date={s_startDate}'
+
+        if endDate is not None:
+            s_endDate = datetimeToString(endDate, '%Y-%m-%d')
+            url = f'{url}&last_date={s_endDate}'
+
+        response = self._request_session.get(url, timeout=self._request_timeout, headers=self._request_headers)
+        return response.status_code, json.loads(response.content)
+

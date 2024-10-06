@@ -14,13 +14,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import base64
+
 import json
 import sys
+import datetime
 
 import requests
 
-from libs.conversions import getWeatherCondition, getWindDirection, getWindchill, getWeatherConditionIcon
+from libs.common.tools import get_query_args, base64Decode, base64Encode, datetimeToString, getDateTime
+from libs.conversions import getWeatherCondition, getWindDirection, getWindchill, getWeatherConditionIcon, \
+    getLongWeekDay, getShortWeekDay
 from libs.core.brightskyAPI import brightskyAPI
 from libs.core.nominatimAPI import nominatimAPI
 from libs.kodion.gui_manager import *
@@ -96,7 +99,7 @@ class brightsky:
                             location['short_name'] = city
 
                             self._addon.setSetting(f'location{locationId}', labels[result])
-                            self._addon.setSetting(f'locationId{locationId}', self._base64Encode(json.dumps(location)))
+                            self._addon.setSetting(f'locationId{locationId}', base64Encode(json.dumps(location)))
 
 
                     else:
@@ -110,81 +113,229 @@ class brightsky:
             except requests.exceptions.ConnectionError as e:
                 self._guiManager.setToastNotification('error', e.response.text)
 
+    def getMaxLocations(self):
+        result = 0
+        for i in range(1, 6):
+            if self._addon.getSetting(f'location{i}') != '' and self._addon.getSetting(f'locationId{i}') != '':
+                result += 1
+
+
+        return result
+
     def clear_current(self):
         pass
 
-    def getWeather(self, param):
+    def getToday(self, location):
+        pass
+
+        # Today.IsFetched
+        # Today.Sunrise
+        # Today.Sunset
+
+    def getWeatherCurrent(self, api, location):
         success = False
-        locationId = param
-        location = json.loads(self._base64Decode(self._addon.getSetting(f'locationId{locationId}')))
-        if location:
 
-            try:
+        xbmc.log(f'getWeatherCurrent.IsFetched: False')
+        self._window.setProperty('Current.IsFetched', 'false')
 
-                api = brightskyAPI()
-                responseCode, content = api.currentWeather(location)
+        try:
 
-                xbmc.log(json.dumps(content))
+            responseCode, content = api.currentWeather(location)
+            if responseCode == 200:
 
-                if responseCode == 200:
+                if 'weather' in content:
+                    success = True
+                    weather = content['weather']
 
+                    self._window.setProperty('Current.Location', location.get('short_name', location.get('display_name')))
+                    self._window.setProperty('Current.Condition', getWeatherCondition(weather.get('icon')))
+                    self._window.setProperty('Current.Temperature', str(weather.get('temperature', 'N/A')))
+                    self._window.setProperty('Current.Wind', str(weather.get('wind_speed_30', 'N/A')))
+                    self._window.setProperty('Current.WindDirection', xbmc.getLocalizedString(getWindDirection(weather.get('wind_direction_30'))))
+                    self._window.setProperty('Current.Humidity', str(weather.get('relative_humidity', 'N/A')))
+                    self._window.setProperty('Current.DewPoint', str(weather.get('dew_point', 'N/A')))
+                    self._window.setProperty('Current.FeelsLike', str(getWindchill(weather.get('temperature'), weather.get('wind_speed_30'))))
+                    self._window.setProperty('Current.OutlookIcon', getWeatherConditionIcon(weather.get('icon')))
+                    self._window.setProperty('Current.Precipitation', str(weather.get('precipitation_60')) + 'mm')
+                    self._window.setProperty('Current.Pressure', str(weather.get('pressure_msl')))
+                    self._window.setProperty('Current.Cloudiness', str(weather.get('cloud_cover')))
+                    self._window.setProperty('Current.WindGust', str(weather.get('wind_gust_speed_30')))
+                    self._window.setProperty('Current.IsFetched', 'true')
+                    xbmc.log(f'getWeatherCurrent.IsFetched: True')
 
-                    # Current.FeelsLike
+                    success = True
 
-                    # Current.ConditionIcon(eg.resource: // resource.images.weathericons.default / 28.png)
-                    # Current.FanartCode
-
-                    if 'weather' in content:
-                        success = True
-                        weather = content['weather']
-
-                        self._window.setProperty('Current.Location', location.get('short_name', location.get('display_name')))
-                        self._window.setProperty('Current.Condition', getWeatherCondition(weather.get('icon')))
-                        self._window.setProperty('Current.Temperature', str(weather.get('temperature', 'N/A')))
-                        self._window.setProperty('Current.Wind', str(weather.get('wind_speed_30', 'N/A')))
-                        self._window.setProperty('Current.WindDirection', xbmc.getLocalizedString(getWindDirection(weather.get('wind_direction_30'))))
-                        self._window.setProperty('Current.Humidity', str(weather.get('relative_humidity', 'N/A')))
-                        self._window.setProperty('Current.DewPoint', str(weather.get('dew_point', 'N/A')))
-                        self._window.setProperty('Current.FeelsLike', str(getWindchill(weather.get('temperature'), weather.get('wind_speed_30'))))
-                        self._window.setProperty('Current.ConditionIcon', getWeatherConditionIcon(weather.get('icon')))
-
-                        # self._window.setProperty(f'Location{locationId}', self._addon.getSetting(f'location{locationId}'))
-                        # self._window.setProperty('Locations', '1')
-
+            else:
+                if 'error' in content and 'message' in content['error']:
+                    self._guiManager.setToastNotification('error', content['error']['message'])
                 else:
-                    if 'error' in content and 'message' in content['error']:
-                        self._guiManager.setToastNotification('error', content['error']['message'])
-                    else:
-                        self._guiManager.setToastNotification('error', self._t.getString(ERROR_BRIGHTSKY))
+                    self._guiManager.setToastNotification('error', self._t.getString(ERROR_BRIGHTSKY))
 
-            except requests.exceptions.ConnectionError as e:
-                self._guiManager.setToastNotification('error', e.response.text)
+        except requests.exceptions.ConnectionError as e:
+            self._guiManager.setToastNotification('error', e.response.text)
 
 
         if not success:
            self.clear_current()
 
     @staticmethod
-    def _base64Encode(s):
-        b = s.encode("ascii")
+    def getDailyOutlook(d):
+        max_key = ''
+        max_entity = 0
+        for key in d:
+            if d[key] > max_entity:
+                max_key = key
+                max_entity = d[key]
 
-        encoded = base64.b64encode(b)
-        return encoded.decode("ascii")
+        return max_key
 
-    @staticmethod
-    def _base64Decode(s):
-        b = s.encode("ascii")
-        decoded = base64.b64decode(b)
-        return decoded.decode("ascii")
+    def getWeatherForecast(self, api, location):
+        success = False
+
+        xbmc.log(f'getWeatherForecast.IsFetched: False')
+        self._window.setProperty('Daily.IsFetched', 'false')
+        self._window.setProperty('36Hour.IsFetched', 'false')
+        self._window.setProperty('Weekend.IsFetched', 'false')
+        self._window.setProperty('Hourly.IsFetched', 'false')
+
+        try:
+
+            startDate = datetime.date.today()
+            endDate = startDate + datetime.timedelta(days=16)
+
+            responseCode, content = api.forecast(location=location, startDate=startDate, endDate=endDate)
+            if responseCode == 200:
+
+                if 'weather' in content:
+                    success = True
+                    accumulated = { 'daily': {},
+                                    'hourly': {}
+                                    }
+
+                    day_count = 0
+                    hour_count = 0
+                    now_datetime = datetime.datetime.today() - datetime.timedelta(hours=1)
+
+                    for item in content['weather']:
+
+                        item_datetime = getDateTime(item['timestamp'], '%Y-%m-%dT%H:%M:%S%z')
+                        day_timestamp = datetimeToString(item_datetime, '%Y-%m-%d')
+                        hour_timestamp = datetimeToString(item_datetime, '%Y-%m-%d %H:%M:%S')
+
+                        doHour = item_datetime > now_datetime and item_datetime.hour & 3 == 0 and hour_count < 35
+
+                        temperature = item.get('temperature')
+
+                        if day_timestamp not in accumulated['daily']:
+                            day_count += 1
+                            if day_count < 17:
+                                accumulated['daily'][day_timestamp] = {}
+                                accumulated['daily'][day_timestamp]['LongDay'] = getLongWeekDay(item_datetime.isoweekday())
+                                accumulated['daily'][day_timestamp]['ShortDay'] = getShortWeekDay(item_datetime.isoweekday())
+                                accumulated['daily'][day_timestamp]['LongDate'] = day_timestamp
+                                accumulated['daily'][day_timestamp]['ShortDate'] = day_timestamp
+                                accumulated['daily'][day_timestamp]['HighTemperature'] = temperature
+                                accumulated['daily'][day_timestamp]['LowTemperature'] = temperature
+                                accumulated['daily'][day_timestamp]['Outlook'] = {}
+                                accumulated['daily'][day_timestamp]['Outlook'][str(item.get('icon'))] = 1
+
+                                # TODO: Humidity, precipitation, WindSpeed, WindDirection, WindDegree, TempMorn,
+                                #  TempDay, TempEve, TempNight, DewPoint, WindGust, Pressure, Cloudiness, Precipitation
+
+                        else:
+                            if temperature > accumulated['daily'][day_timestamp]['HighTemperature']:
+                                accumulated['daily'][day_timestamp]['HighTemperature'] = temperature
+
+                            if temperature < accumulated['daily'][day_timestamp]['LowTemperature']:
+                                accumulated['daily'][day_timestamp]['LowTemperature'] = temperature
+
+                            accumulated['daily'][day_timestamp]['Outlook'][str(item.get('icon'))] = accumulated['daily'][day_timestamp]['Outlook'].get(str(item.get('icon')), 0) + 1
+
+                        if doHour and hour_timestamp not in accumulated['hourly']:
+                            hour_count += 1
+                            accumulated['hourly'][hour_timestamp] = {}
+                            accumulated['hourly'][hour_timestamp]['Time'] = datetimeToString(item_datetime, '%H:%M')
+                            accumulated['hourly'][hour_timestamp]['LongDate'] = day_timestamp
+                            accumulated['hourly'][hour_timestamp]['ShortDate'] = day_timestamp
+                            accumulated['hourly'][hour_timestamp]['Outlook'] = getWeatherCondition(item.get('icon'))
+                            accumulated['hourly'][hour_timestamp]['ShortOutlook'] = getWeatherCondition(item.get('icon'))
+                            accumulated['hourly'][hour_timestamp]['OutlookIcon'] = getWeatherConditionIcon(item.get('icon'))
+                            accumulated['hourly'][hour_timestamp]['WindSpeed'] = str(item.get('wind_speed'))
+                            accumulated['hourly'][hour_timestamp]['WindDirection'] = xbmc.getLocalizedString(getWindDirection(item.get('wind_direction')))
+                            accumulated['hourly'][hour_timestamp]['WindDegree'] = str(item.get('wind_direction'))
+                            accumulated['hourly'][hour_timestamp]['WindDegree'] = str(item.get('wind_gust_speed'))
+                            accumulated['hourly'][hour_timestamp]['Humidity'] = str(item.get('relative_humidity'))
+                            accumulated['hourly'][hour_timestamp]['Temperature'] = str(item.get('temperature')) + '°C'
+                            accumulated['hourly'][hour_timestamp]['DewPoint'] = str(item.get('dew_point'))
+                            accumulated['hourly'][hour_timestamp]['FeelsLike'] = str(getWindchill(item.get('temperature'), item.get('wind_speed')))
+                            accumulated['hourly'][hour_timestamp]['Pressure'] = str(item.get('pressure_msl'))
+                            accumulated['hourly'][hour_timestamp]['Cloudiness'] = str(item.get('cloud_cover'))
+                            accumulated['hourly'][hour_timestamp]['Precipitation'] = str(item.get('precipitation')) + 'mm'
+
+                        if day_count > 16 and hour_count > 34:
+                            break
+
+                    success = len(accumulated['daily']) > 0 or len(accumulated['hourly']) > 0
+
+                    if len(accumulated['daily']) > 0:
+                        self._window.setProperty('Daily.IsFetched', 'true')
+                        xbmc.log(f'getWeatherForecast.IsFetched: True')
+                        i = 0
+                        for item in accumulated['daily'].values():
+                            i += 1
+                            for key in item.keys():
+
+                                if key == 'HighTemperature':
+                                    self._window.setProperty(f'Daily.{i}.{key}', str(item[key]) + '°C')
+                                elif key == 'LowTemperature':
+                                    self._window.setProperty(f'Daily.{i}.{key}', str(item[key]) + '°C')
+                                elif key == 'Outlook':
+                                    outlook = self.getDailyOutlook(item[key])
+                                    self._window.setProperty(f'Daily.{i}.{key}', getWeatherCondition(outlook))
+                                    self._window.setProperty(f'Daily.{i}.ShortOutlook', getWeatherCondition(outlook))
+                                    self._window.setProperty(f'Daily.{i}.OutlookIcon', getWeatherConditionIcon(outlook))
+
+                                else:
+                                    self._window.setProperty(f'Daily.{i}.{key}', str(item[key]))
+
+                    if len(accumulated['hourly']) > 0:
+                        self._window.setProperty('Hourly.IsFetched', 'true')
+                        i = 0
+                        for item in accumulated['hourly'].values():
+                            i += 1
+                            for key in item.keys():
+                                self._window.setProperty(f'Hourly.{i}.{key}', str(item[key]))
 
 
-    @staticmethod
-    def _get_query_args(s_args):
-        args = urllib.parse.parse_qs(s_args)
+        except requests.exceptions.ConnectionError as e:
+            self._guiManager.setToastNotification('error', e.response.text)
 
-        for key in args:
-            args[key] = args[key][0]
-        return args
+        if not success:
+            self.clear_current()
+
+
+    def getWeather(self, param):
+
+        self._window.setProperty('Weather.IsFetched', 'false')
+        self._window.setProperty('WeatherProvider', 'Bright Sky API')
+        # self._window.setProperty('WeatherProviderLogo', 'false')
+
+        locationId = param
+
+        xbmc.log(f'GetWeatcher: {locationId}')
+
+        location = json.loads(base64Decode(self._addon.getSetting(f'locationId{locationId}')))
+        if location:
+
+            self.getToday(location)
+
+            api = brightskyAPI()
+            self.getWeatherCurrent(api, location)
+            self.getWeatherForecast(api, location)
+
+            self._window.setProperty(f'Location{locationId}', location['display_name'])
+            self._window.setProperty('Locations', str(self.getMaxLocations()))
+            self._window.setProperty('Weather.IsFetched', 'true')
 
 
     def run(self):
@@ -192,7 +343,7 @@ class brightsky:
             method = 'weather_request'
             param = int(sys.argv[1])
         else:
-            args = self._get_query_args(sys.argv[1])
+            args = get_query_args(sys.argv[1])
             method = args.get('action')
             param = args.get('id')
 

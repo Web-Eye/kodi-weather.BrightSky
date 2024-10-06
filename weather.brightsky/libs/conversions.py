@@ -15,24 +15,43 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import math
 
+from libs.translations import *
 
 def getWeatherCondition(condition):
 
-    # TODO: translations
+    return {
+        'clear-day': CLEAR_DAY,
+        'clear-night': CLEAR_NIGHT,
+        'partly-cloudy-day': PARTLY_COUDY_DAY,
+        'partly-cloudy-night': PARTLY_COUDY_NIGHT,
+        'cloudy': CLOUDY,
+        'fog': FOG,
+        'wind': WIND,
+        'rain': RAIN,
+        'sleet': SLEET,
+        'snow': SNOW,
+        'hail': HAIL,
+        'thunderstorm': THUNDERSTORM,
+        'null': 'N/A',
+
+        None: 'N/A'
+    }[condition]
+
+def getWeatherConditionShort(condition):
 
     return {
-        'clear-day': 'clear-day',
-        'clear-night': 'clear-night',
-        'partly-cloudy-day': 'partly-cloudy-day',
-        'partly-cloudy-night': 'partly-cloudy-night',
-        'cloudy': 'cloudy',
-        'fog': 'fog',
-        'wind': 'wind',
-        'rain': 'rain',
-        'sleet': 'sleet',
-        'snow': 'snow',
-        'hail': 'hail',
-        'thunderstorm': 'thunderstorm',
+        'clear-day': CLEAR,
+        'clear-night': CLEAR,
+        'partly-cloudy-day': CLOUDY,
+        'partly-cloudy-night': CLOUDY,
+        'cloudy': CLOUDY,
+        'fog': FOG,
+        'wind': WIND,
+        'rain': RAIN,
+        'sleet': SLEET,
+        'snow': SNOW,
+        'hail': HAIL,
+        'thunderstorm': THUNDERSTORM,
         'null': 'N/A',
 
         None: 'N/A'
@@ -102,30 +121,26 @@ def getWeatherConditionIcon(condition):
 
 def getLongWeekDay(day):
 
-    # TODO: translations
-
     return {
-        1: 'Monday',
-        2: 'Tuesday',
-        3: 'Wednesday',
-        4: 'Thursday',
-        5: 'Friday',
-        6: 'Saturday',
-        7: 'Sunday'
+        1: MONDAY,
+        2: TUESDAY,
+        3: WEDNESDAY,
+        4: THURSDAY,
+        5: FRIDAY,
+        6: SATURDAY,
+        7: SUNDAY
     }[day]
 
 def getShortWeekDay(day):
 
-    # TODO: translations
-
     return {
-        1: 'Mon',
-        2: 'Tues',
-        3: 'Wed',
-        4: 'Thur',
-        5: 'Fri',
-        6: 'Sat',
-        7: 'Sun'
+        1: MONDAY_SHORT,
+        2: TUESDAY_SHORT,
+        3: WEDNESDAY_SHORT,
+        4: THURSDAY_SHORT,
+        5: FRIDAY_SHORT,
+        6: SATURDAY_SHORT,
+        7: SUNDAY_SHORT
     }[day]
 
 # TODO: getShortLong Formats

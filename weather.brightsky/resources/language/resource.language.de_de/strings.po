@@ -63,3 +63,111 @@ msgstr "Kein Ort gefunden"
 msgctxt "#30603"
 msgid "ERROR_BRIGHTSKY"
 msgstr "Es ist etwas mit der  brightsky API passiert...."
+
+msgctxt "#30700"
+msgid "MONDAY"
+msgstr "Montag"
+
+msgctxt "#30701"
+msgid "TUESDAY"
+msgstr "Dienstag"
+
+msgctxt "#30702"
+msgid "WEDNESDAY"
+msgstr "Mittwoch"
+
+msgctxt "#30703"
+msgid "THURSDAY"
+msgstr "Donnerstag"
+
+msgctxt "#30704"
+msgid "FRIDAY"
+msgstr "Freitag"
+
+msgctxt "#30705"
+msgid "SATURDAY"
+msgstr "Samstag"
+
+msgctxt "#30706"
+msgid "SUNDAY"
+msgstr "Sonntag"
+
+msgctxt "#30707"
+msgid "MONDAY_SHORT"
+msgstr "Mo"
+
+msgctxt "#30708"
+msgid "TUESDAY_SHORT"
+msgstr "Di"
+
+msgctxt "#30709"
+msgid "WEDNESDAY_SHORT"
+msgstr "Mi"
+
+msgctxt "#30710"
+msgid "THURSDAY_SHORT"
+msgstr "Do"
+
+msgctxt "#30711"
+msgid "FRIDAY_SHORT"
+msgstr "Fr"
+
+msgctxt "#30712"
+msgid "SATURDAY_SHORT"
+msgstr "Sa"
+
+msgctxt "#30713"
+msgid "SUNDAY_SHORT"
+msgstr "So"
+
+msgctxt "#30800"
+msgid "CLEAR_DAY"
+msgstr "Sonnig"
+
+msgctxt "#30801"
+msgid "CLEAR_NIGHT"
+msgstr "klare Nacht"
+
+msgctxt "#30802"
+msgid "PARTLY_COUDY_DAY"
+msgstr "teiweise bewölkt"
+
+msgctxt "#30803"
+msgid "PARTLY_COUDY_NIGHT"
+msgstr "teilweise bewölkte Nacht"
+
+msgctxt "#30804"
+msgid "CLOUDY"
+msgstr "Bewölkt"
+
+msgctxt "#30805"
+msgid "FOG"
+msgstr "Nebel"
+
+msgctxt "#30806"
+msgid "WIND"
+msgstr "Wind"
+
+msgctxt "#30807"
+msgid "RAIN"
+msgstr "Regen"
+
+msgctxt "#30808"
+msgid "SLEET"
+msgstr "Schneeregen"
+
+msgctxt "#30809"
+msgid "SNOW"
+msgstr "Schnee"
+
+msgctxt "#30810"
+msgid "HAIL"
+msgstr "Hagel"
+
+msgctxt "#30811"
+msgid "THUNDERSTORM"
+msgstr "Gewitter"
+
+msgctxt "#30812"
+msgid "CLEAR"
+msgstr "klar"

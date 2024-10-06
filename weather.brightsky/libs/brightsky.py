@@ -23,7 +23,7 @@ import requests
 
 from libs.common.tools import get_query_args, base64Decode, base64Encode, datetimeToString, getDateTime
 from libs.conversions import getWeatherCondition, getWindDirection, getWindchill, getWeatherConditionIcon, \
-    getLongWeekDay, getShortWeekDay
+    getLongWeekDay, getShortWeekDay, getWeatherConditionShort
 from libs.core.brightskyAPI import brightskyAPI
 from libs.core.nominatimAPI import nominatimAPI
 from libs.kodion.gui_manager import *
@@ -148,7 +148,7 @@ class brightsky:
                     weather = content['weather']
 
                     self._window.setProperty('Current.Location', location.get('short_name', location.get('display_name')))
-                    self._window.setProperty('Current.Condition', getWeatherCondition(weather.get('icon')))
+                    self._window.setProperty('Current.Condition', self._t.getString(getWeatherCondition(weather.get('icon'))))
                     self._window.setProperty('Current.Temperature', str(weather.get('temperature', 'N/A')))
                     self._window.setProperty('Current.Wind', str(weather.get('wind_speed_30', 'N/A')))
                     self._window.setProperty('Current.WindDirection', xbmc.getLocalizedString(getWindDirection(weather.get('wind_direction_30'))))
@@ -230,8 +230,8 @@ class brightsky:
                             day_count += 1
                             if day_count < 17:
                                 accumulated['daily'][day_timestamp] = {}
-                                accumulated['daily'][day_timestamp]['LongDay'] = getLongWeekDay(item_datetime.isoweekday())
-                                accumulated['daily'][day_timestamp]['ShortDay'] = getShortWeekDay(item_datetime.isoweekday())
+                                accumulated['daily'][day_timestamp]['LongDay'] = self._t.getString(getLongWeekDay(item_datetime.isoweekday()))
+                                accumulated['daily'][day_timestamp]['ShortDay'] = self._t.getString(getShortWeekDay(item_datetime.isoweekday()))
                                 accumulated['daily'][day_timestamp]['LongDate'] = day_timestamp
                                 accumulated['daily'][day_timestamp]['ShortDate'] = day_timestamp
                                 accumulated['daily'][day_timestamp]['HighTemperature'] = temperature
@@ -257,8 +257,8 @@ class brightsky:
                             accumulated['hourly'][hour_timestamp]['Time'] = datetimeToString(item_datetime, '%H:%M')
                             accumulated['hourly'][hour_timestamp]['LongDate'] = day_timestamp
                             accumulated['hourly'][hour_timestamp]['ShortDate'] = day_timestamp
-                            accumulated['hourly'][hour_timestamp]['Outlook'] = getWeatherCondition(item.get('icon'))
-                            accumulated['hourly'][hour_timestamp]['ShortOutlook'] = getWeatherCondition(item.get('icon'))
+                            accumulated['hourly'][hour_timestamp]['Outlook'] = self._t.getString( getWeatherCondition(item.get('icon')))
+                            accumulated['hourly'][hour_timestamp]['ShortOutlook'] = self._t.getString(getWeatherConditionShort(item.get('icon')))
                             accumulated['hourly'][hour_timestamp]['OutlookIcon'] = getWeatherConditionIcon(item.get('icon'))
                             accumulated['hourly'][hour_timestamp]['WindSpeed'] = str(item.get('wind_speed'))
                             accumulated['hourly'][hour_timestamp]['WindDirection'] = xbmc.getLocalizedString(getWindDirection(item.get('wind_direction')))
@@ -291,8 +291,8 @@ class brightsky:
                                     self._window.setProperty(f'Daily.{i}.{key}', str(item[key]) + '°C')
                                 elif key == 'Outlook':
                                     outlook = self.getDailyOutlook(item[key])
-                                    self._window.setProperty(f'Daily.{i}.{key}', getWeatherCondition(outlook))
-                                    self._window.setProperty(f'Daily.{i}.ShortOutlook', getWeatherCondition(outlook))
+                                    self._window.setProperty(f'Daily.{i}.{key}', self._t.getString(getWeatherCondition(outlook)))
+                                    self._window.setProperty(f'Daily.{i}.ShortOutlook', self._t.getString(getWeatherConditionShort(outlook)))
                                     self._window.setProperty(f'Daily.{i}.OutlookIcon', getWeatherConditionIcon(outlook))
 
                                 else:

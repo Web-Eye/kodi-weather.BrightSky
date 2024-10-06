@@ -63,3 +63,111 @@ msgstr "No location found"
 msgctxt "#30603"
 msgid "ERROR_BRIGHTSKY"
 msgstr "something happened with the brightsky API"
+
+msgctxt "#30700"
+msgid "MONDAY"
+msgstr "Monday"
+
+msgctxt "#30701"
+msgid "TUESDAY"
+msgstr "Tuesday"
+
+msgctxt "#30702"
+msgid "WEDNESDAY"
+msgstr "Wednesday"
+
+msgctxt "#30703"
+msgid "THURSDAY"
+msgstr "Thursday"
+
+msgctxt "#30704"
+msgid "FRIDAY"
+msgstr "Friday"
+
+msgctxt "#30705"
+msgid "SATURDAY"
+msgstr "Saturday"
+
+msgctxt "#30706"
+msgid "SUNDAY"
+msgstr "Sunday"
+
+msgctxt "#30707"
+msgid "MONDAY_SHORT"
+msgstr "Mon"
+
+msgctxt "#30708"
+msgid "TUESDAY_SHORT"
+msgstr "Tue"
+
+msgctxt "#30709"
+msgid "WEDNESDAY_SHORT"
+msgstr "Wed"
+
+msgctxt "#30710"
+msgid "THURSDAY_SHORT"
+msgstr "Thu"
+
+msgctxt "#30711"
+msgid "FRIDAY_SHORT"
+msgstr "Fri"
+
+msgctxt "#30712"
+msgid "SATURDAY_SHORT"
+msgstr "Sat"
+
+msgctxt "#30713"
+msgid "SUNDAY_SHORT"
+msgstr "Sun"
+
+msgctxt "#30800"
+msgid "CLEAR_DAY"
+msgstr "Clear Day"
+
+msgctxt "#30801"
+msgid "CLEAR_NIGHT"
+msgstr "Clear Night"
+
+msgctxt "#30802"
+msgid "PARTLY_COUDY_DAY"
+msgstr "Partly Clear Day"
+
+msgctxt "#30803"
+msgid "PARTLY_COUDY_NIGHT"
+msgstr "Partly Clear Night"
+
+msgctxt "#30804"
+msgid "CLOUDY"
+msgstr "Cloudy"
+
+msgctxt "#30805"
+msgid "FOG"
+msgstr "Fog"
+
+msgctxt "#30806"
+msgid "WIND"
+msgstr "Wind"
+
+msgctxt "#30807"
+msgid "RAIN"
+msgstr "Rain"
+
+msgctxt "#30808"
+msgid "SLEET"
+msgstr "Sleet"
+
+msgctxt "#30809"
+msgid "SNOW"
+msgstr "Snow"
+
+msgctxt "#30810"
+msgid "HAIL"
+msgstr "Hail"
+
+msgctxt "#30811"
+msgid "THUNDERSTORM"
+msgstr "Thunderstorm"
+
+msgctxt "#30812"
+msgid "CLEAR"
+msgstr "Clear"

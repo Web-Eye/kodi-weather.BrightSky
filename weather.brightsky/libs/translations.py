@@ -22,6 +22,39 @@ ERROR_NOMINATIM = 'ERROR_NOMINATIM'
 ERROR_NO_LOCATION_FOUND = 'ERROR_NO_LOCATION_FOUND'
 ERROR_BRIGHTSKY = 'ERROR_BRIGHTSKY'
 
+MONDAY = 'MONDAY'
+TUESDAY = 'TUESDAY'
+WEDNESDAY = 'WEDNESDAY'
+THURSDAY = 'THURSDAY'
+FRIDAY = 'FRIDAY'
+SATURDAY = 'SATURDAY'
+SUNDAY = 'SUNDAY'
+
+MONDAY_SHORT = 'MONDAY_SHORT'
+TUESDAY_SHORT = 'TUESDAY_SHORT'
+WEDNESDAY_SHORT = 'WEDNESDAY_SHORT'
+THURSDAY_SHORT = 'THURSDAY_SHORT'
+FRIDAY_SHORT = 'FRIDAY_SHORT'
+SATURDAY_SHORT = 'SATURDAY_SHORT'
+SUNDAY_SHORT = 'SUNDAY_SHORT'
+
+CLEAR = 'CLEAR'
+CLEAR_DAY = 'CLEAR_DAY'
+CLEAR_NIGHT = 'CLEAR_NIGHT'
+PARTLY_COUDY_DAY = 'PARTLY_COUDY_DAY'
+PARTLY_COUDY_NIGHT = 'PARTLY_COUDY_NIGHT'
+CLOUDY = 'CLOUDY'
+FOG = 'FOG'
+WIND = 'WIND'
+RAIN = 'RAIN'
+SLEET = 'SLEET'
+SNOW = 'SNOW'
+HAIL = 'HAIL'
+THUNDERSTORM = 'THUNDERSTORM'
+
+
+
+
 class Translations:
 
     def __init__(self, addon):
@@ -35,6 +68,35 @@ class Translations:
             ERROR:                      self._language(30600),
             ERROR_NOMINATIM:            self._language(30601),
             ERROR_NO_LOCATION_FOUND:    self._language(30602),
-            ERROR_BRIGHTSKY:            self._language(30603)
+            ERROR_BRIGHTSKY:            self._language(30603),
+            MONDAY:                     self._language(30700),
+            TUESDAY:                    self._language(30701),
+            WEDNESDAY:                  self._language(30702),
+            THURSDAY:                   self._language(30703),
+            FRIDAY:                     self._language(30704),
+            SATURDAY:                   self._language(30705),
+            SUNDAY:                     self._language(30706),
+            MONDAY_SHORT:               self._language(30707),
+            TUESDAY_SHORT:              self._language(30708),
+            WEDNESDAY_SHORT:            self._language(30709),
+            THURSDAY_SHORT:             self._language(30710),
+            FRIDAY_SHORT:               self._language(30711),
+            SATURDAY_SHORT:             self._language(30712),
+            SUNDAY_SHORT:               self._language(30713),
+            CLEAR_DAY:                  self._language(30800),
+            CLEAR_NIGHT:                self._language(30801),
+            PARTLY_COUDY_DAY:           self._language(30802),
+            PARTLY_COUDY_NIGHT:         self._language(30803),
+            CLOUDY:                     self._language(30804),
+            FOG:                        self._language(30805),
+            WIND:                       self._language(30806),
+            RAIN:                       self._language(30807),
+            SLEET:                      self._language(30808),
+            SNOW:                       self._language(30809),
+            HAIL:                       self._language(30810),
+            THUNDERSTORM:               self._language(30811),
+            CLEAR:                      self._language(30812)
+
+
 
         }[name]

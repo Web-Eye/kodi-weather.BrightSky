@@ -50,6 +50,13 @@ class brightsky:
         self._DEFAULT_IMAGE_URL = ''
         self._t = Translations(self._addon)
 
+        self._tempunit = xbmc.getRegion('tempunit')
+        self._speedunit = xbmc.getRegion('speedunit')
+        self._datelong = xbmc.getRegion('datelong')
+        self._dateShort = xbmc.getRegion('dateshort')
+        self._time = xbmc.getRegion('time')
+        self._meridiem = xbmc.getRegion('meridiem')
+
         self._guiManager = GuiManager(0, self._ADDON_ID, self._DEFAULT_IMAGE_URL, self._FANART)
 
     def getLocation(self, param):
@@ -90,8 +97,6 @@ class brightsky:
 
                                 responsecode, content = api.reverse(lat=location['lat'], lon= location['lon'], addressdetails=1)
                                 if responseCode == 200:
-
-                                    xbmc.log(json.dumps(content))
 
                                     if 'address' in content and 'city' in content['address'] and content['address']['city'] != '':
                                         city = content['address']['city']
@@ -135,7 +140,6 @@ class brightsky:
     def getWeatherCurrent(self, api, location):
         success = False
 
-        xbmc.log(f'getWeatherCurrent.IsFetched: False')
         self._window.setProperty('Current.IsFetched', 'false')
 
         try:
@@ -161,7 +165,6 @@ class brightsky:
                     self._window.setProperty('Current.Cloudiness', str(weather.get('cloud_cover')))
                     self._window.setProperty('Current.WindGust', str(weather.get('wind_gust_speed_30')))
                     self._window.setProperty('Current.IsFetched', 'true')
-                    xbmc.log(f'getWeatherCurrent.IsFetched: True')
 
                     success = True
 
@@ -192,7 +195,6 @@ class brightsky:
     def getWeatherForecast(self, api, location):
         success = False
 
-        xbmc.log(f'getWeatherForecast.IsFetched: False')
         self._window.setProperty('Daily.IsFetched', 'false')
         self._window.setProperty('36Hour.IsFetched', 'false')
         self._window.setProperty('Weekend.IsFetched', 'false')
@@ -232,8 +234,8 @@ class brightsky:
                                 accumulated['daily'][day_timestamp] = {}
                                 accumulated['daily'][day_timestamp]['LongDay'] = self._t.getString(getLongWeekDay(item_datetime.isoweekday()))
                                 accumulated['daily'][day_timestamp]['ShortDay'] = self._t.getString(getShortWeekDay(item_datetime.isoweekday()))
-                                accumulated['daily'][day_timestamp]['LongDate'] = day_timestamp
-                                accumulated['daily'][day_timestamp]['ShortDate'] = day_timestamp
+                                accumulated['daily'][day_timestamp]['LongDate'] = datetimeToString(item_datetime, self._datelong)
+                                accumulated['daily'][day_timestamp]['ShortDate'] = datetimeToString(item_datetime, self._dateShort)
                                 accumulated['daily'][day_timestamp]['HighTemperature'] = temperature
                                 accumulated['daily'][day_timestamp]['LowTemperature'] = temperature
                                 accumulated['daily'][day_timestamp]['Outlook'] = {}
@@ -265,7 +267,7 @@ class brightsky:
                             accumulated['hourly'][hour_timestamp]['WindDegree'] = str(item.get('wind_direction'))
                             accumulated['hourly'][hour_timestamp]['WindDegree'] = str(item.get('wind_gust_speed'))
                             accumulated['hourly'][hour_timestamp]['Humidity'] = str(item.get('relative_humidity'))
-                            accumulated['hourly'][hour_timestamp]['Temperature'] = str(item.get('temperature')) + '°C'
+                            accumulated['hourly'][hour_timestamp]['Temperature'] = str(item.get('temperature')) + self._tempunit
                             accumulated['hourly'][hour_timestamp]['DewPoint'] = str(item.get('dew_point'))
                             accumulated['hourly'][hour_timestamp]['FeelsLike'] = str(getWindchill(item.get('temperature'), item.get('wind_speed')))
                             accumulated['hourly'][hour_timestamp]['Pressure'] = str(item.get('pressure_msl'))
@@ -279,16 +281,15 @@ class brightsky:
 
                     if len(accumulated['daily']) > 0:
                         self._window.setProperty('Daily.IsFetched', 'true')
-                        xbmc.log(f'getWeatherForecast.IsFetched: True')
                         i = 0
                         for item in accumulated['daily'].values():
                             i += 1
                             for key in item.keys():
 
                                 if key == 'HighTemperature':
-                                    self._window.setProperty(f'Daily.{i}.{key}', str(item[key]) + '°C')
+                                    self._window.setProperty(f'Daily.{i}.{key}', str(item[key]) + self._tempunit)
                                 elif key == 'LowTemperature':
-                                    self._window.setProperty(f'Daily.{i}.{key}', str(item[key]) + '°C')
+                                    self._window.setProperty(f'Daily.{i}.{key}', str(item[key]) + self._tempunit)
                                 elif key == 'Outlook':
                                     outlook = self.getDailyOutlook(item[key])
                                     self._window.setProperty(f'Daily.{i}.{key}', self._t.getString(getWeatherCondition(outlook)))
@@ -321,9 +322,6 @@ class brightsky:
         # self._window.setProperty('WeatherProviderLogo', 'false')
 
         locationId = param
-
-        xbmc.log(f'GetWeatcher: {locationId}')
-
         location = json.loads(base64Decode(self._addon.getSetting(f'locationId{locationId}')))
         if location:
 

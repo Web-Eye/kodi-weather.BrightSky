@@ -224,7 +224,7 @@ class brightsky:
                         day_timestamp = datetimeToString(item_datetime, '%Y-%m-%d')
                         hour_timestamp = datetimeToString(item_datetime, '%Y-%m-%d %H:%M:%S')
 
-                        doHour = item_datetime > now_datetime and item_datetime.hour & 3 == 0 and hour_count < 35
+                        doHour = item_datetime > now_datetime and item_datetime.hour % 3 == 0 and hour_count < 35
 
                         temperature = item.get('temperature')
 

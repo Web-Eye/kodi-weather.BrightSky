@@ -17,4 +17,7 @@
           <setting id="locationId4" type="text" visible="false" default=""/>
           <setting id="locationId5" type="text" visible="false" default=""/>
      </category>
+     <category id="advanced_settings" label="30550">
+          <setting id="hourly_interval" label="30551" type="enum" values="1|2|3|4|5" default="2"/>
+     </category>
 </settings>

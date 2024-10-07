@@ -48,6 +48,14 @@ msgctxt "#30505"
 msgid "LOCATION5"
 msgstr "Ort 5"
 
+msgctxt "#30550"
+msgid "ADVANCED_SETTINGS"
+msgstr "Erweitert"
+
+msgctxt "#30551"
+msgid "HOURLY_INTERVAL"
+msgstr "Stündliches Intervall"
+
 msgctxt "#30600"
 msgid "ERROR"
 msgstr "Error"
@@ -130,11 +138,11 @@ msgstr "klare Nacht"
 
 msgctxt "#30802"
 msgid "PARTLY_COUDY_DAY"
-msgstr "teiweise bewölkt"
+msgstr "teils bewölkt"
 
 msgctxt "#30803"
 msgid "PARTLY_COUDY_NIGHT"
-msgstr "teilweise bewölkte Nacht"
+msgstr "teils bewölkte Nacht"
 
 msgctxt "#30804"
 msgid "CLOUDY"

@@ -48,6 +48,14 @@ msgctxt "#30505"
 msgid "LOCATION5"
 msgstr "Location 5"
 
+msgctxt "#30550"
+msgid "ADVANCED_SETTINGS"
+msgstr "Advanced"
+
+msgctxt "#30551"
+msgid "HOURLY_INTERVAL"
+msgstr "Hourly Interval"
+
 msgctxt "#30600"
 msgid "ERROR"
 msgstr "Error"

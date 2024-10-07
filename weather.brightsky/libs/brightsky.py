@@ -57,6 +57,8 @@ class brightsky:
         self._time = xbmc.getRegion('time')
         self._meridiem = xbmc.getRegion('meridiem')
 
+        self._hourly_interval = int(self._addon.getSetting('hourly_interval')) + 1
+
         self._guiManager = GuiManager(0, self._ADDON_ID, self._DEFAULT_IMAGE_URL, self._FANART)
 
     def getLocation(self, param):
@@ -216,7 +218,7 @@ class brightsky:
 
                     day_count = 0
                     hour_count = 0
-                    now_datetime = datetime.datetime.today() - datetime.timedelta(hours=1)
+                    now_datetime = datetime.datetime.today() - datetime.timedelta(hours=self._hourly_interval)
 
                     for item in content['weather']:
 
@@ -224,7 +226,7 @@ class brightsky:
                         day_timestamp = datetimeToString(item_datetime, '%Y-%m-%d')
                         hour_timestamp = datetimeToString(item_datetime, '%Y-%m-%d %H:%M:%S')
 
-                        doHour = item_datetime > now_datetime and item_datetime.hour % 3 == 0 and hour_count < 35
+                        doHour = item_datetime > now_datetime and item_datetime.hour % self._hourly_interval == 0 and hour_count < 35
 
                         temperature = item.get('temperature')
 

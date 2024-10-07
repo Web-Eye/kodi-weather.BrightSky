@@ -26,6 +26,7 @@ from libs.conversions import getWeatherCondition, getWindDirection, getWindchill
     getLongWeekDay, getShortWeekDay, getWeatherConditionShort
 from libs.core.brightskyAPI import brightskyAPI
 from libs.core.nominatimAPI import nominatimAPI
+from libs.core.sonnenzeitenAPI import sonnenzeitenAPI
 from libs.kodion.gui_manager import *
 from libs.kodion.addon import Addon
 from libs.translations import *
@@ -132,12 +133,37 @@ class brightsky:
     def clear_current(self):
         pass
 
-    def getToday(self, location):
-        pass
+    def getToday(self, locationId, location):
+        self._window.setProperty('Today.IsFetched', 'false')
+        today = datetimeToString(datetime.datetime.today(), '%Y-%m-%d')
 
-        # Today.IsFetched
-        # Today.Sunrise
-        # Today.Sunset
+        if 'solar' in location.keys() and location['solar'].get('date', '') == today:
+            self._window.setProperty('Today.Sunrise', location['solar'].get('sunrise'))
+            self._window.setProperty('Today.Sunset', location['solar'].get('sunset'))
+            self._window.setProperty('Today.IsFetched', 'true')
+
+        else:
+            api = sonnenzeitenAPI()
+            responseCode, content = api.solarTimes(location['lat'], location['lon'], 'today')
+            if responseCode == 200:
+                if 'results' in content:
+
+                    sunrise = getDateTime(content['results']['sunrise'], '%Y-%m-%dT%H:%M:%S%z')
+                    sunrise_timestamp = datetimeToString(sunrise, '%H:%M:%S')
+
+                    sunset = getDateTime(content['results']['sunset'], '%Y-%m-%dT%H:%M:%S%z')
+                    sunset_timestamp = datetimeToString(sunset, '%H:%M:%S')
+
+                    self._window.setProperty('Today.Sunrise', sunrise_timestamp)
+                    self._window.setProperty('Today.Sunset', sunset_timestamp)
+                    self._window.setProperty('Today.IsFetched', 'true')
+
+                    location['solar'] = {}
+                    location['solar']['date'] = today
+                    location['solar']['sunrise'] = sunrise_timestamp
+                    location['solar']['sunset'] = sunset_timestamp
+                    self._addon.setSetting(f'locationId{locationId}', base64Encode(json.dumps(location)))
+
 
     def getWeatherCurrent(self, api, location):
         success = False
@@ -227,7 +253,6 @@ class brightsky:
                         hour_timestamp = datetimeToString(item_datetime, '%Y-%m-%d %H:%M:%S')
 
                         doHour = item_datetime > now_datetime and item_datetime.hour % self._hourly_interval == 0 and hour_count < 35
-
                         temperature = item.get('temperature')
 
                         if day_timestamp not in accumulated['daily']:
@@ -256,11 +281,20 @@ class brightsky:
                             accumulated['daily'][day_timestamp]['Outlook'][str(item.get('icon'))] = accumulated['daily'][day_timestamp]['Outlook'].get(str(item.get('icon')), 0) + 1
 
                         if doHour and hour_timestamp not in accumulated['hourly']:
+                            hourlyLongDate = datetimeToString(item_datetime, self._datelong)
+                            hourlyShortDate = datetimeToString(item_datetime, self._dateShort)
+                            if (item_datetime.date() - datetime.datetime.today().date()).days == 0:
+                                hourlyLongDate = self._t.getString(TODAY)
+                                hourlyShortDate = self._t.getString(TODAY)
+                            elif (item_datetime.date() - datetime.datetime.today().date()).days == 1:
+                                hourlyLongDate = self._t.getString(TOMORROW)
+                                hourlyShortDate = self._t.getString(TOMORROW)
+
                             hour_count += 1
                             accumulated['hourly'][hour_timestamp] = {}
                             accumulated['hourly'][hour_timestamp]['Time'] = datetimeToString(item_datetime, '%H:%M')
-                            accumulated['hourly'][hour_timestamp]['LongDate'] = day_timestamp
-                            accumulated['hourly'][hour_timestamp]['ShortDate'] = day_timestamp
+                            accumulated['hourly'][hour_timestamp]['LongDate'] = hourlyLongDate
+                            accumulated['hourly'][hour_timestamp]['ShortDate'] = hourlyShortDate
                             accumulated['hourly'][hour_timestamp]['Outlook'] = self._t.getString( getWeatherCondition(item.get('icon')))
                             accumulated['hourly'][hour_timestamp]['ShortOutlook'] = self._t.getString(getWeatherConditionShort(item.get('icon')))
                             accumulated['hourly'][hour_timestamp]['OutlookIcon'] = getWeatherConditionIcon(item.get('icon'))
@@ -327,7 +361,7 @@ class brightsky:
         location = json.loads(base64Decode(self._addon.getSetting(f'locationId{locationId}')))
         if location:
 
-            self.getToday(location)
+            self.getToday(locationId, location)
 
             api = brightskyAPI()
             self.getWeatherCurrent(api, location)

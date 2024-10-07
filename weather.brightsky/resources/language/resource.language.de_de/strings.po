@@ -128,6 +128,14 @@ msgctxt "#30713"
 msgid "SUNDAY_SHORT"
 msgstr "So"
 
+msgctxt "#30714"
+msgid "TODAY"
+msgstr "Heute"
+
+msgctxt "#30715"
+msgid "TOMORROW"
+msgstr "Morgen"
+
 msgctxt "#30800"
 msgid "CLEAR_DAY"
 msgstr "Sonnig"

@@ -38,6 +38,9 @@ FRIDAY_SHORT = 'FRIDAY_SHORT'
 SATURDAY_SHORT = 'SATURDAY_SHORT'
 SUNDAY_SHORT = 'SUNDAY_SHORT'
 
+TODAY = 'TODAY'
+TOMORROW = 'TOMORROW'
+
 CLEAR = 'CLEAR'
 CLEAR_DAY = 'CLEAR_DAY'
 CLEAR_NIGHT = 'CLEAR_NIGHT'
@@ -83,6 +86,8 @@ class Translations:
             FRIDAY_SHORT:               self._language(30711),
             SATURDAY_SHORT:             self._language(30712),
             SUNDAY_SHORT:               self._language(30713),
+            TODAY:                      self._language(30714),
+            TOMORROW:                   self._language(30715),
             CLEAR_DAY:                  self._language(30800),
             CLEAR_NIGHT:                self._language(30801),
             PARTLY_COUDY_DAY:           self._language(30802),
@@ -96,7 +101,5 @@ class Translations:
             HAIL:                       self._language(30810),
             THUNDERSTORM:               self._language(30811),
             CLEAR:                      self._language(30812)
-
-
 
         }[name]

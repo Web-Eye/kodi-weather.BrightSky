@@ -142,6 +142,3 @@ def getShortWeekDay(day):
         6: SATURDAY_SHORT,
         7: SUNDAY_SHORT
     }[day]
-
-# TODO: getShortLong Formats
-# TODO: dateTime Conversions

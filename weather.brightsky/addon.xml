@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
     id="weather.brightsky"
-    version="1.0.2+beta"
+    version="1.0.3+beta"
     name="Bright Sky Weather Provider"
     provider-name="WebEye">
   <requires>

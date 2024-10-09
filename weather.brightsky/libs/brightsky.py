@@ -218,6 +218,12 @@ class brightsky:
                 max_key = key
                 max_entity = d[key]
 
+        if 'night' in max_key:
+            for key in d:
+                if d[key] == max_entity and key != max_key:
+                    max_key = key
+                    break
+
         return max_key
 
     def getWeatherForecast(self, api, location):
@@ -278,7 +284,8 @@ class brightsky:
                             if temperature < accumulated['daily'][day_timestamp]['LowTemperature']:
                                 accumulated['daily'][day_timestamp]['LowTemperature'] = temperature
 
-                            accumulated['daily'][day_timestamp]['Outlook'][str(item.get('icon'))] = accumulated['daily'][day_timestamp]['Outlook'].get(str(item.get('icon')), 0) + 1
+                            if 4 < item_datetime.hour < 23:
+                                accumulated['daily'][day_timestamp]['Outlook'][str(item.get('icon'))] = accumulated['daily'][day_timestamp]['Outlook'].get(str(item.get('icon')), 0) + 1
 
                         if doHour and hour_timestamp not in accumulated['hourly']:
                             hourlyLongDate = datetimeToString(item_datetime, self._datelong)

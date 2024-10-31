@@ -16,6 +16,7 @@
 
 import json
 import requests
+import tzlocal
 
 class sonnenzeitenAPI:
 
@@ -26,9 +27,11 @@ class sonnenzeitenAPI:
                     'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
                 }
 
+        self._tzid = tzlocal.get_localzone_name()
+
     def solarTimes(self, lat, lon, date=None):
         if lat is not None and lon is not None:
-            url = self._baseURL + f'json?lat={lat}&lng={lon}&formatted=0'
+            url = self._baseURL + f'json?lat={lat}&lng={lon}&formatted=0&tzid={self._tzid}'
 
             if date is not None:
                 url = f'{url}&date={date}'
